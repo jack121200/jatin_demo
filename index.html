@@ -16,7 +16,6 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
-            transition: background-color 0.3s ease;
         }
 
         .container {
@@ -27,21 +26,17 @@
             text-align: center;
             width: 80%;
             max-width: 600px;
-            transition: background-color 0.3s ease;
         }
 
         h1 {
             color: #64ffda;
             margin-bottom: 20px;
-            transition: color 0.3s ease;
         }
 
         #factDisplay {
             font-size: 1.2em;
             margin-bottom: 25px;
             color: #f0f0f0;
-            min-height: 2em;
-            transition: color 0.3s ease;
         }
 
         button {
@@ -52,12 +47,11 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 1em;
-            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease-in-out;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
             background-color: #45a29e;
-            transform: scale(1.05);
         }
 
         #factInput {
@@ -68,7 +62,6 @@
             border-radius: 4px;
             background-color: #333;
             color: #fff;
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         #addFactBtn {
@@ -83,59 +76,6 @@
         #errorMsg {
             color: #f44336;
             margin-top: 10px;
-            min-height: 1.2em;
-        }
-
-        #factAddedMsg {
-            color: #64ffda;
-            margin-top: 10px;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .fact-list {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
-        }
-
-        .fact-list li {
-            background-color: #333;
-            border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background-color 0.3s ease;
-        }
-
-        .fact-list li:hover {
-            background-color: #424242;
-        }
-
-        .fact-list button {
-            background-color: #e0e0e0;
-            color: #212121;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8em;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-
-        .fact-list button:hover {
-            background-color: #bdbdbd;
-        }
-
-        #clearAllBtn {
-            background-color: #f44336;
-            color: #fff;
-            margin-top: 20px;
-        }
-
-        #clearAllBtn:hover {
-            background-color: #d32f2f;
         }
     </style>
 </head>
@@ -149,86 +89,34 @@
         <input type="text" id="factInput" placeholder="Enter your fun fact">
         <button id="addFactBtn">Add Fact</button>
         <p id="errorMsg"></p>
-        <p id="factAddedMsg"></p>
-
-        <ul id="factList" class="fact-list"></ul>
-
-        <button id="clearAllBtn">Clear All Facts</button>
     </div>
 
     <script>
+        const facts = [
+            "A day on Venus is longer than a year.",
+            "The Eiffel Tower can be 15 cm taller during the summer.",
+            "Polar bears are nearly undetectable by infrared cameras.",
+            "Bananas are berries, but strawberries aren't.",
+            "The Great Wall of China is not visible from space with the naked eye.",
+            "Honey never spoils.",
+            "A group of flamingos is called a flamboyance.",
+            "It is impossible to hum while holding your nose.",
+            "The shortest war in history lasted only 38 minutes.",
+            "Octopuses have three hearts.",
+            "Sharks have been around longer than trees.",
+            "Cows have best friends.",
+            "The average person spends six months of their life waiting for red lights to turn green."
+        ];
+
         const factDisplay = document.getElementById('factDisplay');
         const factBtn = document.getElementById('factBtn');
         const factInput = document.getElementById('factInput');
         const addFactBtn = document.getElementById('addFactBtn');
         const errorMsg = document.getElementById('errorMsg');
-        const factAddedMsg = document.getElementById('factAddedMsg');
-        const factList = document.getElementById('factList');
-        const clearAllBtn = document.getElementById('clearAllBtn');
-
-        // Function to get facts from local storage
-        function getFactsFromLocalStorage() {
-            const storedFacts = localStorage.getItem('facts');
-            return storedFacts ? JSON.parse(storedFacts) : [
-                "A day on Venus is longer than a year.",
-                "The Eiffel Tower can be 15 cm taller during the summer.",
-                "Polar bears are nearly undetectable by infrared cameras.",
-                "Bananas are berries, but strawberries aren't.",
-                "The Great Wall of China is not visible from space with the naked eye.",
-                "Honey never spoils.",
-                "A group of flamingos is called a flamboyance.",
-                "It is impossible to hum while holding your nose.",
-                "The shortest war in history lasted only 38 minutes.",
-                "Octopuses have three hearts.",
-                "Sharks have been around longer than trees.",
-                "Cows have best friends.",
-                "The average person spends six months of their life waiting for red lights to turn green."
-            ];
-        }
-
-        // Function to save facts to local storage
-        function saveFactsToLocalStorage(facts) {
-            localStorage.setItem('facts', JSON.stringify(facts));
-        }
-
-        // Initialize facts from local storage
-        let facts = getFactsFromLocalStorage();
 
         function getRandomFact() {
             const randomIndex = Math.floor(Math.random() * facts.length);
             return facts[randomIndex];
-        }
-
-        function displayFacts() {
-            factList.innerHTML = ''; // Clear the list
-            facts.forEach((fact, index) => {
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    ${fact}
-                    <div>
-                        <button onclick="editFact(${index})">Edit</button>
-                        <button onclick="deleteFact(${index})">Delete</button>
-                    </div>
-                `;
-                factList.appendChild(li);
-            });
-        }
-
-        function editFact(index) {
-            const newFact = prompt("Edit your fact:", facts[index]);
-            if (newFact !== null) {
-                facts[index] = newFact.trim();
-                saveFactsToLocalStorage(facts);
-                displayFacts();
-            }
-        }
-
-        function deleteFact(index) {
-            if (confirm("Are you sure you want to delete this fact?")) {
-                facts.splice(index, 1);
-                saveFactsToLocalStorage(facts);
-                displayFacts();
-            }
         }
 
         factBtn.addEventListener('click', () => {
@@ -239,36 +127,15 @@
             const newFact = factInput.value.trim();
             if (newFact === "") {
                 errorMsg.textContent = "Please enter a fun fact.";
-                factAddedMsg.style.opacity = 0; // Hide the factAddedMsg
                 return;
             }
 
             facts.push(newFact);
-            saveFactsToLocalStorage(facts);
             factInput.value = "";
             errorMsg.textContent = "";
-            factAddedMsg.textContent = "Fact Added!";
-            factAddedMsg.style.opacity = 1;
-
-            // Hide the message after 2 seconds
-            setTimeout(() => {
-                factAddedMsg.style.opacity = 0;
-            }, 2000);
-
-            displayFacts();
         });
-
-        clearAllBtn.addEventListener('click', () => {
-            if (confirm("Are you sure you want to clear all facts? This action cannot be undone.")) {
-                facts = getFactsFromLocalStorage().slice(0, 13); //reset to default array
-                saveFactsToLocalStorage(facts);
-                displayFacts();
-            }
-        });
-
-        // Initial display of facts
-        displayFacts();
     </script>
 </body>
 
 </html>
+
